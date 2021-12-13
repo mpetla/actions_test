@@ -15,7 +15,7 @@ jobs:
                
       - name: Print labels
         shell: bash
-        run: echo "Label:" github.event.label.name
+        run: echo "Label:" ${{ github.event.label.name }}
     
       - name: List files
         shell: bash
@@ -43,19 +43,19 @@ jobs:
         run: ls -la
 
   deploy-test:
+    if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: 'ubuntu-latest'
     environment: 'test'
     needs: build-and-publish
     steps:
       - name: Download artifact
-        if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
         run: ls -la
 
   deploy-prod:
+    if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: 'ubuntu-latest'
     environment: 'prod'
     needs: [build-and-publish, deploy-test]
     steps:
       - name: Download artifact
-        if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
         run: ls -la
