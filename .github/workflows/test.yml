@@ -12,15 +12,21 @@ jobs:
     steps:
       - name: Print event
         shell: bash
-        run: echo Event ${{ github.event }}
+        run: echo Event ${{ github.ref_name }}
     
       - name: List files
         shell: bash
         run: ls -la
         
-      - name: Buka
+      - name: Buka master
+        if: github.ref_name == 'master'
         shell: bash
-        run: echo "buka" >> buka.txt
+        run: echo "buka master"
+        
+      - name: Buka non master
+        if: github.ref_name != 'master'
+        shell: bash
+        run: echo "buka non master"
       
       - name: Checkout
         uses: actions/checkout@master
