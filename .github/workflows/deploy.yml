@@ -2,7 +2,6 @@ name: Deployment
 
 on:
   push:
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -51,11 +50,20 @@ jobs:
       - name: Download artifact
         run: ls -la
 
+  deploy-qa:
+    if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
+    runs-on: 'ubuntu-latest'
+    environment: 'qa'
+    needs: [build-and-publish, deploy-test]
+    steps:
+      - name: Download artifact
+        run: ls -la
+
   deploy-prod:
     if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: 'ubuntu-latest'
     environment: 'prod'
-    needs: [build-and-publish, deploy-test]
+    needs: [build-and-publish, deploy-test, deploy-qa]
     steps:
       - name: Download artifact
         run: ls -la
