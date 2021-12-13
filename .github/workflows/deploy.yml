@@ -3,6 +3,9 @@ name: Deployment
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+          - '.github/workflows/feature.*'
+          - '.github/workflows/pull-request.*'
 
 jobs:
   build-and-publish:
