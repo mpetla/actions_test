@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test-and-build:
+  pr-test-and-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,9 +32,10 @@ jobs:
         run: echo Build artifact
 
   deploy-test:
+    if: contains(github.event.pull_request.labels.*.name, 'deploy-to-test')
     runs-on: 'ubuntu-latest'
     environment: 'test'
-    needs: test-and-build
+    needs: pr-test-and-build
     steps:
       - name: Download artifact
         shell: bash
