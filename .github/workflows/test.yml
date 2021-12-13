@@ -2,7 +2,6 @@ name: CI/CD
 
 on:
   push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -12,7 +11,11 @@ jobs:
     steps:
       - name: Print event
         shell: bash
-        run: echo Event ${{ github.ref_name }}
+        run: echo "Event:" ${{ github.ref_name }}
+               
+      - name: Print labels
+        shell: bash
+        run: echo "Label:" ${{ github.event.label.name }}
     
       - name: List files
         shell: bash
@@ -31,24 +34,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
         
+      - name: Print previous git tag
+        shell: bash
+        run: git fetch -a        
+        
       - name: List files
         shell: bash
         run: ls -la
 
   deploy-test:
+    if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: 'ubuntu-latest'
     environment: 'test'
     needs: build-and-publish
     steps:
       - name: Download artifact
-        if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
         run: ls -la
 
   deploy-prod:
+    if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: 'ubuntu-latest'
     environment: 'prod'
     needs: [build-and-publish, deploy-test]
     steps:
       - name: Download artifact
-        if: github.ref_name == 'main' && github.ref_type == 'branch' && github.event_name == 'push'
         run: ls -la
