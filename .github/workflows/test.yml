@@ -12,7 +12,15 @@ jobs:
     steps:
       - name: Print event
         shell: bash
-        run: echo Event ${{ github.ref_name }}
+        run: echo "Event:" ${{ github.ref_name }}
+        
+      - name: Print previous git tag
+        shell: bash
+        run: git fetch -a
+        
+      - name: Print labels
+        shell: bash
+        run: echo "Label:" github.event.label.name
     
       - name: List files
         shell: bash
