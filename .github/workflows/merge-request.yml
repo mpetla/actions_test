@@ -1,1 +1,45 @@
+name: Merge request
 
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master      
+
+      - name: SAST
+        shell: bash
+        run: echo SAST
+
+      - name: Unit tests
+        shell: bash
+        run: echo Unit tests
+
+      - name: Integration tests
+        shell: bash
+        run: echo Integration tests        
+
+      - name: Set version
+        shell: bash
+        run: echo Set version
+
+      - name: Build artifact
+        shell: bash
+        run: echo Build artifact
+
+  deploy-test:
+    runs-on: 'ubuntu-latest'
+    environment: 'test'
+    needs: test-and-build
+    steps:
+      - name: Download artifact
+        shell: bash
+        run: echo Download artifact
+
+      - name: Deploy artifact
+        shell: bash
+        run: echo Deploy artifact
